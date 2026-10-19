@@ -2,26 +2,114 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Video y Registro</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body, html { width: 100%; height: 100%; overflow: hidden; background: #000; font-family: sans-serif; }
+        body, html { 
+            width: 100%; 
+            height: 100%; 
+            overflow: hidden; 
+            background: #000; 
+            font-family: Arial, sans-serif;
+        }
         
-        video { width: 100%; height: 100%; object-fit: contain; position: absolute; top: 0; left: 0; z-index: 1; }
-        
-        .overlay-pantalla { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; z-index: 2; opacity: 0; pointer-events: none; transition: opacity 0.5s; background: rgba(0, 0, 0, 0.6); }
-        .overlay-pantalla.show { opacity: 1; pointer-events: auto; }
-        
-        .btn-abrir-registro { padding: 20px 40px; font-size: 22px; font-weight: bold; color: #fff; background: #28a745; border: none; border-radius: 50px; cursor: pointer; }
-        
-        form { display: none; background: #fff; padding: 30px; border-radius: 12px; width: 90%; max-width: 400px; }
-        form h2 { margin-bottom: 20px; color: #333; text-align: center; }
-        
-        .input-group { margin-bottom: 15px; }
-        .input-group label { display: block; margin-bottom: 5px; color: #666; }
-        .input-group input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; }
-        
-        .btn-submit { width: 100%; padding: 12px; background: #007bff; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; }
+        /* Estilos del Video */
+        video { 
+            width: 100%; 
+            height: 100%; 
+            object-fit: contain; 
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+            z-index: 1;
+        }
+
+        /* Contenedor del Formulario (Oculto al inicio) */
+        .form-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+            
+            /* AQUÍ VA EL CAMBIO QUE MENCIONAS: */
+            /* 0.6 significa 60% de oscuridad. Si quieres que el video de fondo se vea más oscuro, súbelo a 0.85 */
+            background-color: rgba(0, 0, 0, 0.6); 
+        }
+
+        /* Cuando el video termina, activamos esta clase para mostrar el formulario */
+        .form-container.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* Tarjeta del Formulario Blanca */
+        form {
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+
+        form h2 {
+            margin-bottom: 20px;
+            color: #333;
+            text-align: center;
+            font-size: 24px;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 16px;
+            outline: none;
+        }
+
+        .input-group input:focus {
+            border-color: #007bff;
+        }
+
+        /* Botón de enviar */
+        .btn-submit {
+            width: 100%;
+            padding: 12px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 10px;
+            transition: background 0.3s;
+        }
+
+        .btn-submit:hover {
+            background: #0056b3;
+        }
     </style>
 </head>
 <body>
@@ -30,43 +118,44 @@
         <source src="tu-video.mp4" type="video/mp4">
     </video>
 
-    <div id="capaInteractiva" class="overlay-pantalla">
-        <button id="btnRegistrarse" class="btn-abrir-registro">Registrarse</button>
-
+    <!-- Formulario que aparecerá mágicamente al terminar el video -->
+    <div id="formularioRegistro" class="form-container">
         <form id="registroForm">
             <h2>Registro</h2>
+            
             <div class="input-group">
-                <label>Nombre completo</label>
-                <input type="text" id="nombre" required>
+                <label for="nombre">Nombre completo</label>
+                <input type="text" id="nombre" required placeholder="Tu nombre">
             </div>
+
             <div class="input-group">
-                <label>Teléfono</label>
-                <input type="tel" id="telefono" required>
+                <label for="telefono">Teléfono</label>
+                <input type="tel" id="telefono" required placeholder="Tu número de teléfono">
             </div>
+
             <div class="input-group">
-                <label>Correo electrónico</label>
-                <input type="email" id="email" required>
+                <label for="email">Correo electrónico</label>
+                <input type="email" id="email" required placeholder="tu@email.com">
             </div>
+
             <button type="submit" class="btn-submit">Enviar Registro</button>
         </form>
     </div>
 
+    <!-- Lógica de detección del final del video -->
     <script>
-        var video = document.getElementById('miVideo');
-        var capaInteractiva = document.getElementById('capaInteractiva');
-        var btnRegistrarse = document.getElementById('btnRegistrarse');
-        var elFormulario = document.getElementById('registroForm');
+        const video = document.getElementById('miVideo');
+        const formulario = document.getElementById('formularioRegistro');
 
+        // Escucha cuando el video llega al final
         video.addEventListener('ended', function() {
-            capaInteractiva.classList.add('show'); 
+            // Hace aparecer el formulario con una transición suave
+            formulario.classList.add('show');
+            // Al no poner nada más aquí, el video se queda congelado en su último cuadro automáticamente
         });
 
-        btnRegistrarse.addEventListener('click', function() {
-            btnRegistrarse.style.display = 'none';
-            elFormulario.style.display = 'block';
-        });
-
-        elFormulario.addEventListener('submit', function(e) {
+        // Controlar el envío del formulario
+        document.getElementById('registroForm').addEventListener('submit', function(e) {
             e.preventDefault();
             alert('¡Datos recibidos!');
         });
