@@ -23,11 +23,10 @@
             top: 0; 
             left: 0; 
             z-index: 1;
-            transition: opacity 0.5s ease;
         }
 
-        /* Contenedor del Formulario (Oculto al inicio) */
-        .form-container {
+        /* Capa oscura que cubre el video al finalizar (Oculta al inicio) */
+        .overlay-pantalla {
             position: absolute;
             top: 0;
             left: 0;
@@ -40,23 +39,50 @@
             opacity: 0;
             pointer-events: none;
             transition: opacity 0.5s ease;
-            background-color: rgba(0, 0, 0, 0.85); /* Fondo oscuro suave detrás del formulario */
+            background-color: rgba(0, 0, 0, 0.6); /* 60% de oscuridad sobre el video congelado */
         }
 
-        /* Cuando el video termina, activamos esta clase */
-        .form-container.show {
+        /* Cuando el video termina, activamos esta capa */
+        .overlay-pantalla.show {
             opacity: 1;
             pointer-events: auto;
         }
 
-        /* Tarjeta del Formulario */
+        /* Botón Inicial de "Registrarse" */
+        .btn-abrir-registro {
+            padding: 20px 40px;
+            font-size: 22px;
+            font-weight: bold;
+            color: #fff;
+            background-color: #28a745; /* Color Verde Llamativo */
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+            transition: transform 0.2s, background 0.3s;
+        }
+
+        .btn-abrir-registro:hover {
+            background-color: #218838;
+            transform: scale(1.05); /* Se agranda un poquito al pasar el mouse */
+        }
+
+        /* Tarjeta del Formulario Blanca (Oculta por defecto con display: none) */
         form {
+            display: none; 
             background: #ffffff;
             padding: 30px;
             border-radius: 12px;
             width: 90%;
             max-width: 400px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            animation: aparecerEfecto 0.4s ease forwards;
+        }
+
+        /* Animación suave para cuando aparece el formulario */
+        @keyframes aparecerEfecto {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         form h2 {
@@ -90,11 +116,11 @@
             border-color: #007bff;
         }
 
-        /* Botón de enviar */
+        /* Botón de enviar formulario */
         .btn-submit {
             width: 100%;
             padding: 12px;
-            background: #007bff;
+            background: #007bff; /* Color Azul */
             color: white;
             border: none;
             border-radius: 6px;
@@ -116,8 +142,13 @@
         <source src="tu-video.mp4" type="video/mp4">
     </video>
 
-    <!-- Formulario que aparecerá mágicamente al terminar el video -->
-    <div id="formularioRegistro" class="form-container">
+    <!-- Contenedor que maneja todo lo que pasa encima del video -->
+    <div id="capaInteractiva" class="overlay-pantalla">
+        
+        <!-- 1. Botón inicial que verá el usuario -->
+        <button id="btnRegistrarse" class="btn-abrir-registro">Registrarse</button>
+
+        <!-- 2. Formulario que está escondido al principio -->
         <form id="registroForm">
             <h2>Registro</h2>
             
@@ -138,24 +169,29 @@
 
             <button type="submit" class="btn-submit">Enviar Registro</button>
         </form>
+
     </div>
 
-    <!-- Lógica de detección del final del video -->
+    <!-- Lógica de control con JavaScript -->
     <script>
         const video = document.getElementById('miVideo');
-        const formulario = document.getElementById('formularioRegistro');
+        const capaInteractiva = document.getElementById('capaInteractiva');
+        const btnRegistrarse = document.getElementById('btnRegistrarse');
+        const elFormulario = document.getElementById('registroForm');
 
-        // Escucha cuando el video llega al final
+        // Paso 1: Detectar cuando termina el video y mostrar el botón verde
         video.addEventListener('ended', function() {
-            // Hace aparecer el formulario con una transición suave
-            formulario.classList.add('show');
-            
-            /* SE ELIMINÓ: video.style.opacity = '0'; */
-            /* De esta manera, el video se queda pausado en su último fotograma de fondo */
+            capaInteractiva.classList.add('show'); 
         });
 
-        // Controlar el envío del formulario
-        document.getElementById('registroForm').addEventListener('submit', function(e) {
+        // Paso 2: Detectar clic en el botón verde, ocultarlo y mostrar la tarjeta blanca
+        btnRegistrarse.addEventListener('click', function() {
+            btnRegistrarse.style.display = 'none'; // Esconde el botón verde
+            elFormulario.style.display = 'block';  // Muestra el formulario de datos
+        });
+
+        // Paso 3: Controlar el envío del formulario
+        elFormulario.addEventListener('submit', function(e) {
             e.preventDefault();
             alert('¡Datos recibidos!');
         });
