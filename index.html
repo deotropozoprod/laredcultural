@@ -2,75 +2,16 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Video y Registro</title>
+    <title>Video</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body, html { width: 100%; height: 100%; overflow: hidden; background: #000; font-family: sans-serif; }
-        
-        video { width: 100%; height: 100%; object-fit: contain; position: absolute; top: 0; left: 0; z-index: 1; }
-        
-        .overlay-pantalla { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; z-index: 2; opacity: 0; pointer-events: none; transition: opacity 0.5s; background: rgba(0, 0, 0, 0.6); }
-        .overlay-pantalla.show { opacity: 1; pointer-events: auto; }
-        
-        .btn-abrir-registro { padding: 20px 40px; font-size: 22px; font-weight: bold; color: #fff; background: #28a745; border: none; border-radius: 50px; cursor: pointer; }
-        
-        form { display: none; background: #fff; padding: 30px; border-radius: 12px; width: 90%; max-width: 400px; }
-        form h2 { margin-bottom: 20px; color: #333; text-align: center; }
-        
-        .input-group { margin-bottom: 15px; }
-        .input-group label { display: block; margin-bottom: 5px; color: #666; }
-        .input-group input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; }
-        
-        .btn-submit { width: 100%; padding: 12px; background: #007bff; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; }
+        body, html { width: 100%; height: 100%; overflow: hidden; background: #000; }
+        video { width: 100vw; height: 100vh; object-fit: cover; position: absolute; top: 0; left: 0; }
     </style>
 </head>
 <body>
-
-    <video id="miVideo" autoplay muted playsinline>
+    <video autoplay muted playsinline>
         <source src="tu-video.mp4" type="video/mp4">
     </video>
-
-    <div id="capaInteractiva" class="overlay-pantalla">
-        <button id="btnRegistrarse" class="btn-abrir-registro">Registrarse</button>
-
-        <form id="registroForm">
-            <h2>Registro</h2>
-            <div class="input-group">
-                <label>Nombre completo</label>
-                <input type="text" id="nombre" required>
-            </div>
-            <div class="input-group">
-                <label>Teléfono</label>
-                <input type="tel" id="telefono" required>
-            </div>
-            <div class="input-group">
-                <label>Correo electrónico</label>
-                <input type="email" id="email" required>
-            </div>
-            <button type="submit" class="btn-submit">Enviar Registro</button>
-        </form>
-    </div>
-
-    <script>
-        var video = document.getElementById('miVideo');
-        var capaInteractiva = document.getElementById('capaInteractiva');
-        var btnRegistrarse = document.getElementById('btnRegistrarse');
-        var elFormulario = document.getElementById('registroForm');
-
-        video.addEventListener('ended', function() {
-            capaInteractiva.classList.add('show'); 
-        });
-
-        btnRegistrarse.addEventListener('click', function() {
-            btnRegistrarse.style.display = 'none';
-            elFormulario.style.display = 'block';
-        });
-
-        elFormulario.addEventListener('submit', function(e) {
-            e.preventDefault();
-            alert('¡Datos recibidos!');
-        });
-    </script>
-
 </body>
 </html>
